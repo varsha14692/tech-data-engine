@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  producer:
+    build: producer
+    container_name: producer
+    environment:
+      - DATA_PATH=/blob
+      - DATABASE_URI=database:5432/postgres
+      - PUBSUB_EMULATOR_HOST=pubsub:8085
+    volumes:
+      - data-storage:/blob
+    links:
+      - "database:database"
+      - "pubsub:pubsub"
+    depends_on:
+      - database
+      - pubsub
+
+  pubsub:
+    image: google/cloud-sdk
+    container_name: pubsub
+    command: "gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
+      --project=data-engineering"
+    ports:
+      - 8085:8085
+
+  purchase_counter:
+    build: purchase_counter
+    container_name: purchase_counter
+    volumes:
+      - data-storage:/blob
+
+  database:
+    image: postgres:13.3
+    restart: always
+    container_name: postgres-db
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  data-storage: null
+  database: null
