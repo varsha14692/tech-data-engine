@@ -5,6 +5,7 @@ from typing import List
 import dataclasses
 import logging
 import random
+import db
 import time
 import output
 from faker import Faker
@@ -24,12 +25,22 @@ class CartItem:
 
 @dataclasses.dataclass
 class Purchase:
-    """Basic User."""
+    """Basic Purchase."""
 
     id_: str
     timestamp: str
     user_id: str
     cart: List[CartItem]
+
+@dataclasses.dataclass
+class Purchases:
+    """Custom Purchase."""
+
+    id_: str
+    timestamp: str
+    user_id: str
+    article_id: str
+    quantity: int
 
 
 def _generate_purchase(user_ids: List[str], article_ids: List[str]) -> Purchase:
@@ -55,14 +66,26 @@ def _generate_purchase(user_ids: List[str], article_ids: List[str]) -> Purchase:
     )
 
 
-def _sink(purchases: List[Purchase]) -> None:
+def _sink(purchaseList: List[Purchase]) -> None:
     """Sink generated purchase data to disk and publish to topic.
 
     :param purchase:   The purchase data to sink.
     """
-    output.dump_files(purchases, DATA_DIR)
-    output.publish(purchases)
-
+    purchases=[]       
+    output.dump_files(purchaseList, DATA_DIR)
+    output.publish(purchaseList)
+    for purchase in purchaseList
+        for cartItem in purchase.cart
+            purchases.append(Purchases(
+            id_=purchase.id_,
+            timestamp=purchase.timestamp,
+            user_id=purchase.user_id,
+            article_id=cartItem.article_id,
+            quantity=cartItem.quantity
+            ))
+    
+    db.insert_records(purchases, DATA_DIR)
+    """purchases data inserted successfully ."""
 
 def _sleep() -> None:
     """Sleep."""

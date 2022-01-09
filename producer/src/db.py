@@ -35,6 +35,15 @@ USERS_TABLE = Table(
     Column("email", String),
 )
 
+PURCHASES_TABLE = Table(
+    "purchases",
+    meta,
+    Column("id", String),
+    Column("timestamp", String),
+    Column("user_id", String),
+    Column("article_id", String),
+    Column("quantity", Integer)
+)
 
 def setup_database() -> None:
     """Create database table if missing."""
@@ -42,6 +51,7 @@ def setup_database() -> None:
     with db.connect():
         ARTICLES_TABLE.create(checkfirst=True)
         USERS_TABLE.create(checkfirst=True)
+        PURCHASES_TABLE.create(checkfirst=True)
 
 
 def insert_records(data, table):
