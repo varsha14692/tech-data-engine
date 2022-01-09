@@ -71,9 +71,10 @@ def _sink(purchaseList: List[Purchase]) -> None:
 
     :param purchase:   The purchase data to sink.
     """
-    purchases=[]       
+    purchases: List[Purchases]=[]       
     output.dump_files(purchaseList, DATA_DIR)
     output.publish(purchaseList)
+    logger.info("purchaseList %s data before object construction.", purchaseList)
     for purchase in purchaseList:
         for cartItem in purchase.cart:
             purchases.append(Purchases(
@@ -85,7 +86,7 @@ def _sink(purchaseList: List[Purchase]) -> None:
             ))
     
     db.insert_records(purchases, DATA_DIR)
-    """purchases data inserted successfully ."""
+    logger.info("purchases data inserted successfully .")
 
 def _sleep() -> None:
     """Sleep."""
