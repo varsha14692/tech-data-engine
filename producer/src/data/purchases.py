@@ -74,8 +74,8 @@ def _sink(purchaseList: List[Purchase]) -> None:
     purchases=[]       
     output.dump_files(purchaseList, DATA_DIR)
     output.publish(purchaseList)
-    for purchase in purchaseList
-        for cartItem in purchase.cart
+    for purchase in purchaseList:
+        for cartItem in purchase.cart:
             purchases.append(Purchases(
             id_=purchase.id_,
             timestamp=purchase.timestamp,

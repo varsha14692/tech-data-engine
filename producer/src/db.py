@@ -2,7 +2,7 @@
 import dataclasses
 import logging
 import os
-from sqlalchemy import Table, Column, String, Float, MetaData
+from sqlalchemy import Table, Column, String, Float, Integer, MetaData
 from sqlalchemy.engine import create_engine
 from sqlalchemy.dialects.postgresql import insert
 
@@ -62,14 +62,14 @@ def insert_records(data, table):
     """
     setup_database()
     logger.info("Insert %d records into table '%s'", len(data), table)
-    if table == "articles:
+    if table == "articles":
         table = ARTICLES_TABLE
-     elif table == "purchases":
+    elif table == "purchases":
         table = PURCHASES_TABLE
-     else:
+    else:
         table = USERS_TABLE
     logger.info("Insert %d records into updated table query '%s'", len(data), table)
-    
+
     with db.connect() as conn:
         for d in data:
             record = dataclasses.asdict(d)
