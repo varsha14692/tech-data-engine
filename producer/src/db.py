@@ -62,8 +62,14 @@ def insert_records(data, table):
     """
     setup_database()
     logger.info("Insert %d records into table '%s'", len(data), table)
-    table = ARTICLES_TABLE if table == "articles" else USERS_TABLE
-
+    if table == "articles:
+        table = ARTICLES_TABLE
+     elif table == "purchases":
+        table = PURCHASES_TABLE
+     else:
+        table = USERS_TABLE
+    logger.info("Insert %d records into updated table query '%s'", len(data), table)
+    
     with db.connect() as conn:
         for d in data:
             record = dataclasses.asdict(d)
