@@ -74,10 +74,14 @@ def insert_records(data, table):
         for d in data:
             record = dataclasses.asdict(d)
             record["id"] = record.pop("id_")
-
-            insert_statement = (
+            insert_statement = None
+            if table == "purchases":
+                insert_statement = (
+                insert(table)
+                .values(**record))
+            else:
+                insert_statement = (
                 insert(table)
                 .values(**record)
-                .on_conflict_do_nothing(index_elements=["id"])
-            )
+                .on_conflict_do_nothing(index_elements=["id"]))
             conn.execute(insert_statement)

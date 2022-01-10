@@ -85,6 +85,7 @@ def _sink(purchaseList: List[Purchase]) -> None:
             quantity=cartItem.quantity
             ))
     
+    logger.info("purchases %s data before data inserted.", purchases)
     db.insert_records(purchases, DATA_DIR)
     logger.info("purchases data inserted successfully .")
 
