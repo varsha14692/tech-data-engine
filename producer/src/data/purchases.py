@@ -38,6 +38,7 @@ class Purchases:
 
     id_: str
     timestamp: str
+    document_id: str
     user_id: str
     article_id: str
     quantity: int
@@ -78,8 +79,9 @@ def _sink(purchaseList: List[Purchase]) -> None:
     for purchase in purchaseList:
         for cartItem in purchase.cart:
             purchases.append(Purchases(
-            id_=purchase.id_,
+            id_=str(uuid4()),
             timestamp=purchase.timestamp,
+            document_id=purchase.id_,
             user_id=purchase.user_id,
             article_id=cartItem.article_id,
             quantity=cartItem.quantity
@@ -87,7 +89,7 @@ def _sink(purchaseList: List[Purchase]) -> None:
     
     logger.info("purchases %s data before data inserted.", purchases)
     db.insert_records(purchases, DATA_DIR)
-    logger.info("purchases data inserted successfully .")
+    logger.info("purchases data inserted successfully.")
 
 def _sleep() -> None:
     """Sleep."""
@@ -98,7 +100,6 @@ def _sleep() -> None:
 
 def _invalidate(event: Purchase) -> Purchase:
     """Make some of the data invalid.
-
     :param event:   Data to invalidate
     """
     logger.debug("Invalidate an event.")
@@ -124,7 +125,6 @@ def _invalidate(event: Purchase) -> Purchase:
 
 def _batch_generate(user_ids: List[str], article_ids: List[str]) -> List[Purchase]:
     """Generate between 1 and 9 events.
-
     :param user_ids:    List of user ids.
     :param article_ids: List of article ids.
     """
@@ -138,7 +138,6 @@ def _batch_generate(user_ids: List[str], article_ids: List[str]) -> List[Purchas
 
 def main(user_ids: List[str], article_ids: List[str]) -> None:
     """Generate and dump purchase event data.
-
     :param user_ids:    List of user ids.
     :param article_ids: List of article ids.
     """

@@ -38,8 +38,9 @@ USERS_TABLE = Table(
 PURCHASES_TABLE = Table(
     "purchases",
     meta,
-    Column("id", String),
-    Column("timestamp", String),
+    Column("id", String, primary_key=True),
+    Column("timestamp", String),    
+    Column("document_id", String),
     Column("user_id", String),
     Column("article_id", String),
     Column("quantity", Integer)
@@ -74,13 +75,7 @@ def insert_records(data, table):
         for d in data:
             record = dataclasses.asdict(d)
             record["id"] = record.pop("id_")
-            insert_statement = None
-            if table == "purchases":
-                insert_statement = (
-                insert(table)
-                .values(**record))
-            else:
-                insert_statement = (
+            insert_statement = (
                 insert(table)
                 .values(**record)
                 .on_conflict_do_nothing(index_elements=["id"]))
